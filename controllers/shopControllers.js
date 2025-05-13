@@ -1,15 +1,26 @@
 import shopModel from '../models/shop.js'
 
 class ShopController {
-    static getAllShop = async (req, res) =>{
-        try {
-            const allShop = await shopModel.find()
-            // console.log(allShop)
-            res.json(allShop)
-        } catch (error) {
-            console.log(error.message)
-        }
+    static getAllShop = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
+
+        const total = await shopModel.countDocuments();
+        const shops = await shopModel.find().skip(skip).limit(limit);
+
+        res.json({
+            data: shops,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+        });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ message: 'Server Error' });
     }
+}
+
     static createShop =async (req, res) =>{
         try {
             const {name, shop_address, product_category, product_price} = req.body

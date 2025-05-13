@@ -2,7 +2,7 @@ import dotenv from 'dotenv'
 import express from 'express'
 import connectDB from './db/connectDB.js';
 import web from './routes/web.js';
-
+import cors from 'cors'
 
 
 //env file configuration
@@ -17,6 +17,9 @@ connectDB(DATABASE_URL)
 
 const app = express();
 app.use(express.json())
+
+app.use(cors());
+
 //the base usrl for shop controller
 app.use('/shop', web)
 
